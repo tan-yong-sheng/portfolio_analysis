@@ -1,11 +1,5 @@
 # Build a Tearsheet for your portfolio within 10 lines of code
 
-
-## How to run this code
-
-1. download the library needed: `pandas`, `openbb`, `quanstats`
-2. run the code with `python -m analysis`
-
 ## Overview
 This portfolio tearsheet is mainly generated using 2 libraries, `openbb` and `quantstats`
 
@@ -23,3 +17,8 @@ So, if you want to reuse this template, just merely change this two input:
 But, take note that the data source is from Yahoo Finance, so when you want to change the stock ticker in excel file, please refer that ticker symbol in Yahoo Finance.
 
 ![image](./image/quantstats-tearsheet.png "Quantstats")
+
+## How to run this code
+
+1. download the library needed: `pandas`, `openbb`, `quanstats`
+2. run the code with `python -m analysis`
