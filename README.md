@@ -6,6 +6,7 @@ This portfolio tearsheet is mainly generated using 2 libraries, `openbb` and `qu
 - Used `quantstats.reports.html` to generate a tearsheet for my portfolio. See the output here: [Portfolio tearsheet](./output/quantstats-tearsheet.html)
 
 So, if you want to reuse this template, just merely change this two input:
+
 (1) data inside excel file [here](./input/portfolio_data.xlsx):
 
 ![image](./output/portfolio_data.png)
