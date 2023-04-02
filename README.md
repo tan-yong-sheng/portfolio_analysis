@@ -7,13 +7,12 @@ This portfolio tearsheet is mainly generated using 2 libraries, `openbb` and `qu
 
 So, if you want to reuse this template, just merely change this two input:
 
-(1) data inside excel file [here](./input/portfolio_data.xlsx):
+1. data inside excel file [here](./input/portfolio_data.xlsx):
 
 ![image](./output/portfolio_data.png)
 
+2. benchmark symbol you want to compare with
 
-(2) benchmark symbol you want to compare with
-
-But, take note that the data source is from Yahoo Finance, so please refer the ticker symbol saved t
+But, take note that the data source is from Yahoo Finance, so when you want to change the stock ticker in excel file, please refer that ticker symbol in Yahoo Finance.
 
 ![image](./output/quantstats-tearsheet.png "Quantstats")
