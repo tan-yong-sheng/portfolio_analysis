@@ -22,4 +22,4 @@ So, if you want to reuse this template, just merely change this two input:
 
 But, take note that the data source is from Yahoo Finance, so when you want to change the stock ticker in excel file, please refer that ticker symbol in Yahoo Finance.
 
-![image](./quantstats-tearsheet.png "Quantstats")
+![image](./image/quantstats-tearsheet.png "Quantstats")
