@@ -1,0 +1,1 @@
+![image](./output/quantstats-tearsheet.png "Quantstats")
