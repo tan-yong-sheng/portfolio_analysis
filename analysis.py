@@ -2,7 +2,7 @@ import quantstats as qs
 from openbb_terminal.sdk import openbb
 import pandas
 
-excel_file_path = r"./portfolio_data.xlsx" # change to your input excel path
+excel_file_path = r"./input/portfolio_data.xlsx" # change to your input excel path
 benchmark_symbol = "0820EA.KL" # change the benchmark you want, for example SPY
 
 # Load portfolio data from ".xlsx" excel file 
@@ -17,6 +17,6 @@ daily_returns.index = pandas.to_datetime(daily_returns.index)
 daily_returns.rename(columns={"benchmark":benchmark_symbol}, inplace=True) 
 
 # calculate quantitative analysis of the assets
-qs.reports.html(daily_returns["portfolio"], daily_returns[benchmark_symbol], output=True)
+qs.reports.html(daily_returns["portfolio"], daily_returns[benchmark_symbol], output="/output/portfolio_tearsheet.html")
 
 
