@@ -18,7 +18,10 @@ But, take note that the data source is from Yahoo Finance, so when you want to c
 
 ![image](./image/quantstats-tearsheet.png "Quantstats")
 
-## How to run this code
 
-1. download the library needed: `pandas`, `openbb`, `quanstats`
-2. run the code with `python -m analysis`
+## How to run this code
+Make sure you have python installed in your computer
+
+In your terminal, run the code as below
+1. `pip install pandas openbb quanstats`
+2. `python -m analysis`
