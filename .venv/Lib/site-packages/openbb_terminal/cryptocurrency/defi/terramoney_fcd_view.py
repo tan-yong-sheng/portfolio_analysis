@@ -1,0 +1,319 @@
+"""Terra Money FCD view"""
+__docformat__ = "numpy"
+
+import logging
+import os
+from typing import List, Optional
+
+import matplotlib.pyplot as plt
+from matplotlib import ticker
+
+from openbb_terminal import config_terminal as cfg
+from openbb_terminal.config_plot import PLOT_DPI
+from openbb_terminal.cryptocurrency.dataframe_helpers import (
+    lambda_very_long_number_formatter,
+    prettify_column_names,
+)
+from openbb_terminal.cryptocurrency.defi import terramoney_fcd_model
+from openbb_terminal.decorators import log_start_end
+from openbb_terminal.helper_funcs import (
+    export_data,
+    is_valid_axes_count,
+    lambda_long_number_format,
+    plot_autoscale,
+    print_rich_table,
+)
+from openbb_terminal.rich_config import console
+
+logger = logging.getLogger(__name__)
+
+
+@log_start_end(log=logger)
+def display_account_staking_info(
+    address: str = "",
+    limit: int = 10,
+    export: str = "",
+    sheet_name: Optional[str] = None,
+) -> None:
+    """Prints table showing staking info for provided terra account address [Source: https://fcd.terra.dev/swagger]
+
+    Parameters
+    ----------
+    address: str
+        terra blockchain address e.g. terra1jvwelvs7rdk6j3mqdztq5tya99w8lxk6l9hcqg
+    limit: int
+        Number of records to display
+    export : str
+        Export dataframe data to csv,json,xlsx file
+    """
+
+    df, report = terramoney_fcd_model.get_staking_account_info(address)
+    if not df.empty:
+        print_rich_table(
+            df.head(limit), headers=list(df.columns), show_index=False, title=report
+        )
+    else:
+        console.print(f"[red]No data found for address {address}\n[/red]")
+
+    export_data(
+        export,
+        os.path.dirname(os.path.abspath(__file__)),
+        "sinfo",
+        df,
+        sheet_name,
+    )
+
+
+@log_start_end(log=logger)
+def display_validators(
+    limit: int = 10,
+    sortby: str = "votingPower",
+    ascend: bool = True,
+    export: str = "",
+    sheet_name: Optional[str] = None,
+) -> None:
+    """Prints table showing information about terra validators [Source: https://fcd.terra.dev/swagger]
+
+    Parameters
+    ----------
+    limit: int
+        Number of records to display
+    sortby: str
+        Key by which to sort data. Choose from:
+        validatorName, tokensAmount, votingPower, commissionRate, status, uptime
+    ascend: bool
+        Flag to sort data descending
+    export : str
+        Export dataframe data to csv,json,xlsx file
+    """
+
+    df = terramoney_fcd_model.get_validators(sortby, ascend)
+    df_data = df.copy()
+    df["tokensAmount"] = df["tokensAmount"].apply(
+        lambda x: lambda_very_long_number_formatter(x)
+    )
+    df.columns = [
+        x if x not in ["Voting power", "Commission rate", "Uptime"] else f"{x} %"
+        for x in prettify_column_names(df.columns)
+    ]
+
+    print_rich_table(
+        df.head(limit),
+        headers=list(df.columns),
+        floatfmt=".2f",
+        show_index=False,
+    )
+
+    export_data(
+        export,
+        os.path.dirname(os.path.abspath(__file__)),
+        "validators",
+        df_data,
+        sheet_name,
+    )
+
+
+@log_start_end(log=logger)
+def display_gov_proposals(
+    limit: int = 10,
+    status: str = "all",
+    sortby: str = "id",
+    ascend: bool = True,
+    export: str = "",
+    sheet_name: Optional[str] = None,
+) -> None:
+    """Prints table showing terra blockchain governance proposals list [Source: https://fcd.terra.dev/swagger]
+
+    Parameters
+    ----------
+    limit: int
+        Number of records to display
+    status: str
+        status of proposal, one from list: ['Voting','Deposit','Passed','Rejected']
+    sortby: str
+        Key by which to sort data
+    ascend: bool
+        Flag to sort data ascend
+    export : str
+        Export dataframe data to csv,json,xlsx file
+    """
+
+    df = terramoney_fcd_model.get_proposals(status, sortby, ascend, limit)
+
+    print_rich_table(df, headers=list(df.columns), floatfmt=".2f", show_index=False)
+
+    export_data(
+        export,
+        os.path.dirname(os.path.abspath(__file__)),
+        "govp",
+        df,
+        sheet_name,
+    )
+
+
+@log_start_end(log=logger)
+def display_account_growth(
+    kind: str = "total",
+    cumulative: bool = False,
+    limit: int = 90,
+    export: str = "",
+    sheet_name: Optional[str] = None,
+    external_axes: Optional[List[plt.Axes]] = None,
+) -> None:
+    """Plots terra blockchain account growth history [Source: https://fcd.terra.dev/swagger]
+
+    Parameters
+    ----------
+    limit: int
+        Number of records to display
+    kind: str
+        display total account count or active account count. One from list [active, total]
+    cumulative: bool
+        Flag to show cumulative or discrete values. For active accounts only discrete value are available.
+    export : str
+        Export dataframe data to csv,json,xlsx file
+    external_axes : Optional[List[plt.Axes]], optional
+        External axes (1 axis is expected in the list), by default None
+    """
+
+    df = terramoney_fcd_model.get_account_growth(cumulative)
+    if kind not in ["active", "total"]:
+        kind = "total"
+    options = {"total": "Total accounts", "active": "Active accounts"}
+
+    opt = options[kind]
+    label = "Cumulative" if cumulative and opt == "total" else "Daily"
+
+    # This plot has 1 axis
+    if not external_axes:
+        _, ax = plt.subplots(figsize=plot_autoscale(), dpi=PLOT_DPI)
+    elif is_valid_axes_count(external_axes, 1):
+        (ax,) = external_axes
+    else:
+        return
+
+    df = df.sort_values("date", ascending=False).head(limit)
+    df = df.set_index("date")
+
+    start, end = df.index[-1], df.index[0]
+
+    if cumulative:
+        ax.plot(df[opt], label=df[opt])
+    else:
+        ax.bar(x=df.index, height=df[opt], label=df[opt])
+
+    ax.set_ylabel(f"{opt}")
+    ax.get_yaxis().set_major_formatter(
+        ticker.FuncFormatter(lambda x, _: lambda_long_number_format(x))
+    )
+    ax.set_title(f"{label} number of {opt.lower()} in period from {start} to {end}")
+    cfg.theme.style_primary_axis(ax)
+
+    if not external_axes:
+        cfg.theme.visualize_output()
+
+    export_data(
+        export,
+        os.path.dirname(os.path.abspath(__file__)),
+        "gacc",
+        df,
+        sheet_name,
+    )
+
+
+@log_start_end(log=logger)
+def display_staking_ratio_history(
+    limit: int = 90,
+    export: str = "",
+    sheet_name: Optional[str] = None,
+    external_axes: Optional[List[plt.Axes]] = None,
+) -> None:
+    """Plots terra blockchain staking ratio history [Source: https://fcd.terra.dev/v1]
+
+    Parameters
+    ----------
+    limit: int
+        Number of records to display
+    export : str
+        Export dataframe data to csv,json,xlsx file
+    external_axes : Optional[List[plt.Axes]], optional
+        External axes (1 axis is expected in the list), by default None
+    """
+
+    df = terramoney_fcd_model.get_staking_ratio_history(limit)
+
+    start, end = df.index[-1], df.index[0]
+
+    # This plot has 1 axis
+    if not external_axes:
+        _, ax = plt.subplots(figsize=plot_autoscale(), dpi=PLOT_DPI)
+    elif is_valid_axes_count(external_axes, 1):
+        (ax,) = external_axes
+    else:
+        return
+
+    ax.plot(df, label=df["stakingRatio"])
+    ax.set_ylabel("Staking ratio [%]")
+    ax.set_title(f"Staking ratio from {start} to {end}")
+
+    cfg.theme.style_primary_axis(ax)
+
+    if not external_axes:
+        cfg.theme.visualize_output()
+
+    export_data(
+        export,
+        os.path.dirname(os.path.abspath(__file__)),
+        "sratio",
+        df,
+        sheet_name,
+    )
+
+
+@log_start_end(log=logger)
+def display_staking_returns_history(
+    limit: int = 90,
+    export: str = "",
+    sheet_name: Optional[str] = None,
+    external_axes: Optional[List[plt.Axes]] = None,
+) -> None:
+    """Plots terra blockchain staking returns history [Source: https://fcd.terra.dev/swagger]
+
+    Parameters
+    ----------
+    limit: int
+        Number of records to display
+    export : str
+        Export dataframe data to csv,json,xlsx file
+    external_axes : Optional[List[plt.Axes]], optional
+        External axes (1 axis is expected in the list), by default None
+
+    """
+    # This plot has 1 axis
+    if not external_axes:
+        _, ax = plt.subplots(figsize=plot_autoscale(), dpi=PLOT_DPI)
+    elif is_valid_axes_count(external_axes, 1):
+        (ax,) = external_axes
+    else:
+        return
+
+    df = terramoney_fcd_model.get_staking_returns_history(limit)
+
+    start, end = df.index[-1], df.index[0]
+
+    ax.plot(df, label=df["annualizedReturn"])
+    ax.set_ylabel("Staking returns [%]")
+    ax.set_title(f"Staking returns from {start} to {end}")
+
+    cfg.theme.style_primary_axis(ax)
+
+    if not external_axes:
+        cfg.theme.visualize_output()
+
+    export_data(
+        export,
+        os.path.dirname(os.path.abspath(__file__)),
+        "sreturn",
+        df,
+        sheet_name,
+    )

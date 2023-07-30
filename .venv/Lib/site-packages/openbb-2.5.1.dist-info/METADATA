@@ -1,0 +1,174 @@
+Metadata-Version: 2.1
+Name: openbb
+Version: 2.5.1
+Summary: Investment Research for Everyone, Anywhere.
+Home-page: https://openbb.co
+License: MIT
+Author: Didier Rodrigues Lopes
+Requires-Python: >=3.8, !=2.7.*, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*, !=3.6.*, !=3.7.*, !=3.11.*
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Provides-Extra: all
+Provides-Extra: doc
+Provides-Extra: forecast
+Provides-Extra: installer
+Provides-Extra: jupyterlab
+Provides-Extra: optimization
+Requires-Dist: FundamentalAnalysis (>=0.2.6,<0.3.0)
+Requires-Dist: GitPython (>=3.1.17,<4.0.0)
+Requires-Dist: Jinja2 (>=3.0.3,<4.0.0)
+Requires-Dist: Pygments (>=2.11.2,<3.0.0)
+Requires-Dist: Quandl (>=3.6.0,<4.0.0)
+Requires-Dist: Riskfolio-Lib (>=3.1.1,<4.0.0) ; extra == "optimization" or extra == "all"
+Requires-Dist: alpha-vantage (>=2.3.1,<3.0.0)
+Requires-Dist: ascii-magic (>=1.6,<2.0)
+Requires-Dist: bs4 (>=0.0.1,<0.0.2)
+Requires-Dist: bt (>=0.2.9,<0.3.0)
+Requires-Dist: ccxt (>=2.5.67,<3.0.0)
+Requires-Dist: charset-normalizer (==2.1.1)
+Requires-Dist: degiro-connector (>=2.0.3,<3.0.0)
+Requires-Dist: detecta (>=0.0.5,<0.0.6)
+Requires-Dist: dnspython (>=2.1.0,<3.0.0)
+Requires-Dist: docstring-parser (>=0.15,<0.16) ; extra == "doc"
+Requires-Dist: feedparser (>=6.0.10,<7.0.0)
+Requires-Dist: financedatabase (>=2.0.8,<3.0.0)
+Requires-Dist: finnhub-python (>=2.4.10,<3.0.0)
+Requires-Dist: finviz (>=1.3.4,<2.0.0,!=1.4.5)
+Requires-Dist: finvizfinance (>=0.14.0,<0.15.0)
+Requires-Dist: fred (>=3.1,<4.0)
+Requires-Dist: fredapi (>=0.4.3,<0.5.0)
+Requires-Dist: grpcio (>=1.51.1,<2.0.0)
+Requires-Dist: holidays (>=0.14.2,<0.15.0)
+Requires-Dist: html5lib (>=1.1,<2.0)
+Requires-Dist: intrinio-sdk (>=6.22.2,<7.0.0)
+Requires-Dist: ipyflex (>=0.2.4,<0.3.0)
+Requires-Dist: ipympl (>=0.8.2,<0.9.0)
+Requires-Dist: ipython (==8.5.0)
+Requires-Dist: ipywidgets (>=8.0.2,<9.0.0)
+Requires-Dist: iso8601 (>=0.1.14,<0.2.0)
+Requires-Dist: jedi-language-server (>=0.40.0,<0.41.0) ; extra == "jupyterlab"
+Requires-Dist: jupyterlab (>=3.2.4,<4.0.0)
+Requires-Dist: jupyterlab-code-formatter (>=1.4.10,<2.0.0) ; extra == "jupyterlab"
+Requires-Dist: jupyterlab-lsp (>=3.10.1,<4.0.0) ; extra == "jupyterlab"
+Requires-Dist: jupyterlab-widgets (>=3.0.3,<4.0.0)
+Requires-Dist: lightgbm (==3.3.3) ; extra == "forecast" or extra == "all"
+Requires-Dist: linearmodels (>=4.25,<5.0)
+Requires-Dist: matplotlib (>=3.3.3,<4.0.0)
+Requires-Dist: mplfinance (>=0.12.7-alpha.7,<0.13.0)
+Requires-Dist: mstarpy (>=0.0.4,<0.0.5)
+Requires-Dist: numpy (==1.23.4)
+Requires-Dist: oandapyV20 (>=0.6.3,<0.7.0)
+Requires-Dist: openai-whisper (>=20230124,<20230125) ; extra == "forecast" or extra == "all"
+Requires-Dist: openpyxl (>=3.0.9,<4.0.0)
+Requires-Dist: packaging (>=22.0)
+Requires-Dist: pandas (>=1.5.0,<2.0.0)
+Requires-Dist: pandas-market-calendars (>=3.2,<3.3)
+Requires-Dist: pandas-ta (>=0.3.14-beta.0,<0.4.0)
+Requires-Dist: papermill (==2.4)
+Requires-Dist: plotly (>=5.0.0,<6.0.0)
+Requires-Dist: praw (>=7.1.4,<8.0.0)
+Requires-Dist: prompt-toolkit (>=3.0.16,<4.0.0)
+Requires-Dist: protobuf (==3.20.1)
+Requires-Dist: psaw (>=0.0.12,<0.0.13)
+Requires-Dist: psutil (!=5.9.4)
+Requires-Dist: pyally (>=1.1.2,<2.0.0)
+Requires-Dist: pycoingecko (>=2.2.0,<3.0.0)
+Requires-Dist: pydantic (>=1.10.5,<2.0.0)
+Requires-Dist: pyinstaller (>=4.10,<5.0) ; extra == "installer"
+Requires-Dist: pyrsistent (>=0.18.0,<0.19.0)
+Requires-Dist: pythclient (>=0.1.2,<0.2.0)
+Requires-Dist: python-binance (>=1.0.15,<2.0.0)
+Requires-Dist: python-coinmarketcap (>=0.2,<0.3)
+Requires-Dist: python-dotenv (>=0.19.2,<0.20.0)
+Requires-Dist: python-i18n (>=0.3.9,<0.4.0)
+Requires-Dist: pytorch-lightning (==1.6.5) ; extra == "forecast" or extra == "all"
+Requires-Dist: pytrends (>=4.7.3,<5.0.0)
+Requires-Dist: rapidfuzz (>=2.13.7,<3.0.0)
+Requires-Dist: requests (>=2.25.1,<3.0.0)
+Requires-Dist: rich (>=12.6.0,<13.0.0)
+Requires-Dist: robin-stocks (>=2.0.3,<3.0.0)
+Requires-Dist: ruamel.yaml (>=0.17.21,<0.18.0)
+Requires-Dist: scipy (>=1.9.3,<2.0.0)
+Requires-Dist: screeninfo (>=0.6.7,<0.7.0)
+Requires-Dist: seaborn (>=0.11.0,<0.12.0)
+Requires-Dist: setuptools (<65.5.0)
+Requires-Dist: setuptools-rust (>=1.5.2,<2.0.0) ; extra == "forecast" or extra == "all"
+Requires-Dist: sparqlwrapper (>=2.0.0,<3.0.0)
+Requires-Dist: squarify (>=0.4.3,<0.5.0)
+Requires-Dist: statsmodels (>=0.13,<0.14)
+Requires-Dist: stocksera (>=0.1.21,<0.2.0)
+Requires-Dist: streamlit (>=1.17.0,<2.0.0)
+Requires-Dist: tenacity (<8.0.0)
+Requires-Dist: thepassiveinvestor (>=1.1.2,<2.0.0)
+Requires-Dist: tokenterminal (>=1.0.1,<2.0.0)
+Requires-Dist: torch (>=1.11.0,<1.12.0) ; extra == "forecast" or extra == "all"
+Requires-Dist: tradingview-ta (>=3.2.3,<4.0.0)
+Requires-Dist: transformers (>=4.26.1,<5.0.0) ; extra == "forecast" or extra == "all"
+Requires-Dist: tweepy (>=4.12.1,<5.0.0)
+Requires-Dist: u8darts[torch] (==0.23.0) ; extra == "forecast" or extra == "all"
+Requires-Dist: vaderSentiment (==3.3.2)
+Requires-Dist: valinvest (>=0.0.2,<0.0.3)
+Requires-Dist: voila (>=0.3.0)
+Requires-Dist: watchdog (>=2.1.9,<3.0.0)
+Requires-Dist: y-py (!=0.5.5)
+Requires-Dist: yahooquery (>=2.3.0,<3.0.0)
+Requires-Dist: yfinance (>=0.2.9,<0.3.0)
+Requires-Dist: yt-dlp (>=2023.2.17,<2024.0.0) ; extra == "forecast" or extra == "all"
+Project-URL: Documentation, https://docs.openbb.co/sdk
+Project-URL: Repository, https://github.com/OpenBB-finance/OpenBBTerminal
+Description-Content-Type: text/markdown
+
+[![Downloads](https://static.pepy.tech/badge/openbb)](https://pepy.tech/project/openbb)
+[![LatestRelease](https://badge.fury.io/py/openbb.svg)](https://github.com/OpenBB-finance/OpenBBTerminal)
+
+| OpenBB is committed to build the future of investment research by focusing on an open source infrastructure accessible to everyone, everywhere. |
+|:--:|
+| ![OpenBBLogo](https://user-images.githubusercontent.com/25267873/218899768-1f0964b8-326c-4f35-af6f-ea0946ac970b.png) |
+| Check our website at [openbb.co](www.openbb.co) |
+
+
+## OpenBB SDK Overview
+
+OpenBB SDK provides a convenient way to access raw financial data from multiple data providers. This allows users to build custom financial dashboards and reports in minutes.
+
+More information on this product can be found [here](https://openbb.co/products/sdk)
+
+
+## Installation
+
+The command below provides access to the core functionalities behind the [OpenBB Terminal](https://openbb.co/products/terminal).
+
+```python
+pip install openbb
+```
+
+If you wish to utilize our **Portfolio Optimization** or **Machine Learning / Artificial Intelligence** toolkits, please see instructions [here](https://docs.openbb.co/sdk/quickstart/installation).
+
+## Usage
+
+Access our fully fledged financial SDK with a single line of python code.
+
+```python
+from openbb_terminal.sdk import openbb
+```
+
+Everything you need to use the OpenBB SDK can be found on our [Official Documentation](https://docs.openbb.co/sdk).
+
+Main uses cases can be seen below.
+___
+
+#### RAW FINANCIAL DATA AT YOUR FINGERTIPS
+
+Access raw financial data from any data source that you are interested. The open source nature of this SDK makes it so that this is an ever-growing project and that everyone can contribute to.
+
+![Stocks Load](https://user-images.githubusercontent.com/25267873/218906336-cebd1fc8-7e7a-45bc-a5fc-641eb19c3e8c.png)
+
+#### GENERATE INSIGHTS 10X FASTER
+
+For most of the functionalities, adding `_chart` to the function will allow you to visualize the output directly from a Jupyter Notebook. Not only speeding up the time it takes to create a plot for the data you are interested in, but making building custom reports much faster.
+
+![Economy Treasury Chart](https://user-images.githubusercontent.com/25267873/218906112-b2272d43-11fc-4ec1-9a8f-b2d8e2ed7dc1.png)
+

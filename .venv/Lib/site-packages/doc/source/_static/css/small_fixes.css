@@ -1,0 +1,26 @@
+span.classifier:before {
+    font-style: normal;
+    margin: 0 0.5em;
+    content: ":";
+    display: inline-block;
+}
+
+span.versionmodified.deprecated, span.versionmodified.changed, span.versionmodified.added {
+   font-weight: bold;
+}
+
+span.versionmodified.deprecated {
+  color: rgb(203,70,83);
+}
+
+span.versionmodified.changed {
+  color: rgb(238,144,64);
+}
+
+span.versionmodified.added {
+  color: rgb(72,138,87);
+}
+
+div.versionadded p.admonition-title, div.deprecated.admonition p.admonition-title, div.versionchanged p.admonition-title {
+    font-weight: normal !important;
+}

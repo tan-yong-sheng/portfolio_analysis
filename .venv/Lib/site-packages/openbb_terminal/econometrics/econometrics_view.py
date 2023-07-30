@@ -1,0 +1,416 @@
+"""Econometrics View"""
+__docformat__ = "numpy"
+
+import logging
+import os
+from typing import Dict, List, Optional, Union
+
+import matplotlib.pyplot as plt
+import pandas as pd
+from matplotlib.units import ConversionError
+from pandas.plotting import register_matplotlib_converters
+
+from openbb_terminal.config_plot import PLOT_DPI
+from openbb_terminal.config_terminal import theme
+from openbb_terminal.decorators import log_start_end
+from openbb_terminal.econometrics import econometrics_model
+from openbb_terminal.econometrics.econometrics_helpers import get_ending
+from openbb_terminal.helper_funcs import export_data, plot_autoscale, print_rich_table
+from openbb_terminal.rich_config import console
+
+logger = logging.getLogger(__name__)
+
+register_matplotlib_converters()
+
+
+@log_start_end(log=logger)
+def show_options(
+    datasets: Dict[str, pd.DataFrame],
+    dataset_name: Optional[str] = None,
+    export: str = "",
+    sheet_name: Optional[str] = None,
+):
+    """Plot custom data
+
+    Parameters
+    ----------
+    datasets: dict
+        The loaded in datasets
+    dataset_name: str
+        The name of the dataset you wish to show options for
+    sheet_name: str
+        Optionally specify the name of the sheet the data is exported to.
+    export: str
+        Format to export image
+    """
+    if not datasets:
+        console.print(
+            "Please load in a dataset by using the 'load' command before using this feature."
+        )
+    else:
+        option_tables = econometrics_model.get_options(datasets, dataset_name)
+
+        for dataset, data_values in option_tables.items():
+            print_rich_table(
+                data_values,
+                headers=list(data_values.columns),
+                show_index=False,
+                title=f"Options for dataset: '{dataset}'",
+            )
+
+            export_data(
+                export,
+                os.path.dirname(os.path.abspath(__file__)),
+                f"{dataset}_options",
+                data_values.set_index("column"),
+                sheet_name,
+            )
+
+
+@log_start_end(log=logger)
+def display_plot(
+    data: Union[pd.Series, pd.DataFrame, Dict[str, pd.DataFrame]],
+    export: str = "",
+    sheet_name: Optional[str] = None,
+    external_axes: Optional[List[plt.axes]] = None,
+):
+    """Plot data from a dataset
+
+    Parameters
+    ----------
+    data: Union[pd.Series, pd.DataFrame, Dict[str: pd.DataFrame]
+        Dictionary with key being dataset.column and dataframes being values
+    sheet_name: str
+        Optionally specify the name of the sheet the data is exported to.
+    export: str
+        Format to export image
+    external_axes:Optional[List[plt.axes]]
+        External axes to plot on
+    """
+    if isinstance(data, pd.Series):
+        data = {data.name: data}
+    elif isinstance(data, pd.DataFrame):
+        data = {x: data[x] for x in data.columns}
+
+    for dataset_col in data:
+        if isinstance(data[dataset_col].index, pd.MultiIndex):
+            console.print(
+                "The index appears to be a multi-index. "
+                "Therefore, it is not possible to plot the data."
+            )
+            del data[dataset_col]
+
+    # Check that there's at least a valid dataframe
+    if data:
+        if external_axes is None:
+            _, ax = plt.subplots(figsize=plot_autoscale(), dpi=PLOT_DPI)
+        else:
+            ax = external_axes[0]
+
+        for dataset_col in data:
+            try:
+                if isinstance(data[dataset_col], pd.Series):
+                    ax.plot(data[dataset_col].index, data[dataset_col].values)
+                elif isinstance(data[dataset_col], pd.DataFrame):
+                    ax.plot(data[dataset_col])
+
+            except ConversionError:
+                print(f"Could not convert column: {dataset_col}")
+            except TypeError:
+                print(f"Could not convert column: {dataset_col}")
+
+        theme.style_primary_axis(ax)
+        if external_axes is None:
+            theme.visualize_output()
+
+        ax.legend(list(data.keys()))
+
+    export_data(
+        export,
+        os.path.dirname(os.path.abspath(__file__)),
+        "plot",
+        sheet_name,
+    )
+
+
+@log_start_end(log=logger)
+def display_norm(
+    data: pd.Series,
+    dataset: str = "",
+    column: str = "",
+    plot: bool = True,
+    export: str = "",
+    sheet_name: Optional[str] = None,
+    external_axes: Optional[List[plt.axes]] = None,
+):
+    """Determine the normality of a timeseries.
+
+    Parameters
+    ----------
+    data: pd.Series
+        Series of custom data
+    dataset: str
+        Dataset name
+    column: str
+        Column for y data
+    plot : bool
+        Whether you wish to plot a histogram
+    sheet_name: str
+        Optionally specify the name of the sheet the data is exported to.
+    export: str
+        Format to export data.
+    external_axes: Optional[List[plt.axes]]
+        External axes to plot on
+    """
+    if data.dtype not in [int, float]:
+        console.print(
+            f"The column type must be numeric. The provided column type is {data.dtype}. "
+            f"Consider using the command 'type' to change this.\n"
+        )
+    else:
+        results = econometrics_model.get_normality(data)
+
+        ending = get_ending(dataset, column)
+        print_rich_table(
+            results,
+            headers=list(results.columns),
+            show_index=True,
+            title=f"Normality test{ending}",
+        )
+
+        if plot:
+            if external_axes is None:
+                _, ax = plt.subplots(figsize=plot_autoscale(), dpi=PLOT_DPI)
+            else:
+                ax = external_axes[0]
+
+            ax.hist(data, bins=100)
+
+            ax.set_title(f"Histogram{ending}")
+
+            theme.style_primary_axis(ax)
+
+            if external_axes is None:
+                theme.visualize_output()
+
+        if export:
+            export_data(
+                export,
+                os.path.dirname(os.path.abspath(__file__)),
+                f"{column}_{dataset}_norm",
+                results,
+                sheet_name,
+            )
+        else:
+            console.print()
+
+
+@log_start_end(log=logger)
+def display_root(
+    data: pd.Series,
+    dataset: str = "",
+    column: str = "",
+    fuller_reg: str = "c",
+    kpss_reg: str = "c",
+    export: str = "",
+    sheet_name: Optional[str] = None,
+):
+    """Determine the normality of a timeseries.
+
+    Parameters
+    ----------
+    data : pd.Series
+        Series of target variable
+    dataset: str
+        Name of the dataset
+    column: str
+        Name of the column
+    fuller_reg : str
+        Type of regression of ADF test. Choose c, ct, ctt, or nc
+    kpss_reg : str
+        Type of regression for KPSS test. Choose c or ct
+    sheet_name: str
+        Optionally specify the name of the sheet the data is exported to.
+    export: str
+        Format to export data.
+    """
+    if data.dtype not in [int, float]:
+        console.print(
+            f"The column type must be numeric. The provided "
+            f"type is {data.dtype}. Consider using the command 'type' to change this.\n"
+        )
+    else:
+        results = econometrics_model.get_root(data, fuller_reg, kpss_reg)
+
+        ending = get_ending(dataset, column)
+        print_rich_table(
+            results,
+            headers=list(results.columns),
+            show_index=True,
+            title=f"Unitroot {ending}",
+        )
+
+        export_data(
+            export,
+            os.path.dirname(os.path.abspath(__file__)),
+            f"{dataset}_{column}_root",
+            results,
+            sheet_name,
+        )
+
+
+@log_start_end(log=logger)
+def display_granger(
+    dependent_series: pd.Series,
+    independent_series: pd.Series,
+    lags: int = 3,
+    confidence_level: float = 0.05,
+    export: str = "",
+    sheet_name: Optional[str] = None,
+):
+    """Show granger tests
+
+    Parameters
+    ----------
+    dependent_series: Series
+        The series you want to test Granger Causality for.
+    independent_series: Series
+        The series that you want to test whether it Granger-causes dependent_series
+    lags : int
+        The amount of lags for the Granger test. By default, this is set to 3.
+    confidence_level: float
+        The confidence level you wish to use. By default, this is set to 0.05.
+    export : str
+        Format to export data
+    """
+    if dependent_series.dtype not in [int, float]:
+        console.print(
+            f"The time series {dependent_series.name} needs to be numeric but is type "
+            f"{dependent_series.dtype}. Consider using the command 'type' to change this."
+        )
+    elif independent_series.dtype not in [int, float]:
+        console.print(
+            f"The time series {independent_series.name} needs to be numeric but is type "
+            f"{independent_series.dtype}. Consider using the command 'type' to change this."
+        )
+    else:
+        granger_df = econometrics_model.get_granger_causality(
+            dependent_series, independent_series, lags
+        )
+
+        print_rich_table(
+            granger_df,
+            headers=list(granger_df.columns),
+            show_index=True,
+            title=f"Granger Causality Test [Y: {dependent_series.name} | X: {independent_series.name} | Lags: {lags}]",
+        )
+
+        result_ftest = round(granger_df.loc["params_ftest"]["P-value"], 3)
+
+        if result_ftest > confidence_level:
+            console.print(
+                f"As the p-value of the F-test is {result_ftest}, we can not reject the null hypothesis at "
+                f"the {confidence_level} confidence level.\n"
+            )
+        else:
+            console.print(
+                f"As the p-value of the F-test is {result_ftest}, we can reject the null hypothesis at "
+                f"the {confidence_level} confidence level and find the Series '{independent_series.name}' "
+                f"to Granger-cause the Series '{dependent_series.name}'\n"
+            )
+
+        export_data(
+            export,
+            os.path.dirname(os.path.abspath(__file__)),
+            f'{dependent_series.name.replace(".","-")}_{independent_series.name.replace(".","-")}_granger',
+            granger_df,
+            sheet_name,
+        )
+
+
+@log_start_end(log=logger)
+def display_cointegration_test(
+    *datasets: pd.Series,
+    significant: bool = False,
+    plot: bool = True,
+    export: str = "",
+    sheet_name: Optional[str] = None,
+    external_axes: Optional[List[plt.axes]] = None,
+):
+    """Estimates long-run and short-run cointegration relationship for series y and x and apply
+    the two-step Engle & Granger test for cointegration.
+
+    Uses a 2-step process to first estimate coefficients for the long-run relationship
+        y_t = c + gamma * x_t + z_t
+
+    and then the short-term relationship,
+        y_t - y_(t-1) = alpha * z_(t-1) + epsilon_t,
+
+    with z the found residuals of the first equation.
+
+    Then tests co-integration with the Dickey-Fuller phi=1 vs phi < 1 in
+        z_t = phi * z_(t-1) + eta_t
+
+    If this implies phi < 1, the z series is stationary is concluded to be
+    stationary, and thus the series y and x are concluded to be cointegrated.
+
+    Parameters
+    ----------
+    datasets: pd.Series
+        Variable number of series to test for cointegration
+    significant: float
+        Show only companies that have p-values lower than this percentage
+    plot: bool
+        Whether you wish to plot the z-values of all pairs.
+    export : str
+        Format to export data
+    external_axes:Optional[List[plt.axes]]
+        External axes to plot on
+    """
+    if len(datasets) < 2:
+        console.print("[red]Co-integration requires at least two time series.[/red]")
+        return
+
+    df: pd.DataFrame = econometrics_model.get_coint_df(*datasets)
+
+    if significant:
+        console.print(
+            f"Only showing pairs that are statistically significant ({significant} > p-value)."
+        )
+        df = df[significant > df["P Value"]]
+        console.print()
+
+    print_rich_table(
+        df,
+        headers=list(df.columns),
+        show_index=True,
+        index_name="Pairs",
+        title="Cointegration Tests",
+    )
+
+    if plot:
+        if external_axes is None:
+            _, ax = plt.subplots(figsize=plot_autoscale(), dpi=PLOT_DPI)
+        else:
+            ax = external_axes[0]
+
+        z_values = econometrics_model.get_coint_df(*datasets, return_z=True)
+
+        for pair, values in z_values.items():
+            ax.plot(values, label=pair)
+
+        ax.legend()
+        ax.set_title("Error correction terms")
+
+        theme.style_primary_axis(ax)
+
+        if external_axes is None:
+            theme.visualize_output()
+
+        export_data(
+            export,
+            os.path.dirname(os.path.abspath(__file__)),
+            "coint",
+            df,
+            sheet_name,
+        )

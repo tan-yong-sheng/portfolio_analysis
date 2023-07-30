@@ -1,0 +1,4 @@
+
+          [console_scripts]
+          psaw=psaw.psaw:cli
+      

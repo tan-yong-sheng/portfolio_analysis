@@ -1,0 +1,401 @@
+"""Yfinance options model"""
+__docformat__ = "numpy"
+
+import logging
+import math
+from datetime import date, datetime, timedelta
+from typing import Any, Dict, List, Optional, Tuple
+
+import pandas as pd
+import yfinance as yf
+
+from openbb_terminal.decorators import log_start_end
+from openbb_terminal.helper_funcs import get_rf
+from openbb_terminal.rich_config import console, optional_rich_track
+
+logger = logging.getLogger(__name__)
+
+sorted_chain_columns = [
+    "contractSymbol",
+    "optionType",
+    "expiration",
+    "strike",
+    "lastPrice",
+    "bid",
+    "ask",
+    "openInterest",
+    "volume",
+    "impliedVolatility",
+]
+
+
+def get_full_option_chain(symbol: str, quiet: bool = False) -> pd.DataFrame:
+    """Get all options for given ticker [Source: Yahoo Finance]
+
+    Parameters
+    ----------
+    symbol: str
+        Stock ticker symbol
+    quiet: bool
+        Flag to suppress progress bar
+
+    Returns
+    -------
+    pd.Dataframe
+        Option chain
+    """
+    ticker = yf.Ticker(symbol)
+    dates = ticker.options
+
+    options = pd.DataFrame()
+
+    for _date in optional_rich_track(
+        dates, suppress_output=quiet, desc="Getting Option Chain"
+    ):
+        calls = ticker.option_chain(_date).calls
+        calls["optionType"] = "call"
+        calls["expiration"] = _date
+        calls = calls[sorted_chain_columns]
+        puts = ticker.option_chain(_date).puts
+        puts["optionType"] = "put"
+        puts["expiration"] = _date
+        puts = puts[sorted_chain_columns]
+
+        temp = pd.merge(calls, puts, how="outer", on="strike")
+        temp["expiration"] = _date
+        options = (
+            pd.concat([options, pd.concat([calls, puts])], axis=0)
+            .fillna(0)
+            .reset_index(drop=True)
+        )
+    return options
+
+
+@log_start_end(log=logger)
+def get_option_chain(symbol: str, expiry: str):
+    """Gets option chain from yf for given ticker and expiration
+
+    Parameters
+    ----------
+    symbol: str
+        Ticker symbol to get options for
+    expiry: str
+        Date to get options for. YYYY-MM-DD
+
+    Returns
+    -------
+    chains: yf.ticker.Options
+        Options chain
+    """
+
+    yf_ticker = yf.Ticker(symbol)
+    try:
+        chain = yf_ticker.option_chain(expiry)
+    except Exception:
+        console.print(f"[red]Error: Expiration {expiry} cannot be found.[/red]")
+        chain = pd.DataFrame()
+
+    return chain
+
+
+@log_start_end(log=logger)
+def option_expirations(symbol: str):
+    """Get available expiration dates for given ticker
+
+    Parameters
+    ----------
+    symbol: str
+        Ticker symbol to get expirations for
+
+    Returns
+    -------
+    dates: List[str]
+        List of of available expirations
+    """
+    yf_ticker = yf.Ticker(symbol)
+    dates = list(yf_ticker.options)
+    if not dates:
+        console.print("No expiration dates found for ticker.")
+    return dates
+
+
+@log_start_end(log=logger)
+def get_dividend(symbol: str) -> pd.Series:
+    """Gets option chain from yf for given ticker and expiration
+
+    Parameters
+    ----------
+    symbol: str
+        Ticker symbol to get options for
+
+    Returns
+    -------
+    chains: yf.ticker.Dividends
+        Dividends
+    """
+    yf_ticker = yf.Ticker(symbol)
+    dividend = yf_ticker.dividends
+    return dividend
+
+
+@log_start_end(log=logger)
+def get_x_values(current_price: float, options: List[Dict[str, int]]) -> List[float]:
+    """Generates different price values that need to be tested"""
+    x_list = list(range(101))
+    mini = current_price
+    maxi = current_price
+    if len(options) == 0:
+        mini *= 0.5
+        maxi *= 1.5
+    elif len(options) > 0:
+        biggest = max(options, key=lambda x: x["strike"])
+        smallest = min(options, key=lambda x: x["strike"])
+        maxi = max(maxi, biggest["strike"]) * 1.2
+        mini = min(mini, smallest["strike"]) * 0.8
+    num_range = maxi - mini
+    return [(x / 100) * num_range + mini for x in x_list]
+
+
+def get_y_values(
+    base: float,
+    price: float,
+    options: List[Dict[Any, Any]],
+    underlying: int,
+) -> float:
+    """Generates y values for corresponding x values"""
+    option_change = 0
+    change = price - base
+    for option in options:
+        if option["type"] == "Call":
+            abs_change = price - option["strike"] if price > option["strike"] else 0
+            option_change += option["sign"] * abs_change
+        elif option["type"] == "Put":
+            abs_change = option["strike"] - price if price < option["strike"] else 0
+            option_change += option["sign"] * abs_change
+    return (change * underlying) + option_change
+
+
+@log_start_end(log=logger)
+def generate_data(
+    current_price: float, options: List[Dict[str, int]], underlying: int
+) -> Tuple[List[float], List[float], List[float]]:
+    """Gets x values, and y values before and after premiums"""
+
+    # Remove empty elements from options
+    options = [o for o in options if o]
+
+    x_vals = get_x_values(current_price, options)
+    base = current_price
+    total_cost = sum(x["cost"] for x in options)
+    before = [get_y_values(base, x, options, underlying) for x in x_vals]
+    if total_cost != 0:
+        after = [
+            get_y_values(base, x, options, underlying) - total_cost for x in x_vals
+        ]
+        return x_vals, before, after
+    return x_vals, before, []
+
+
+@log_start_end(log=logger)
+def get_price(symbol: str) -> float:
+    """Get current price for a given ticker
+
+    Parameters
+    ----------
+    symbol : str
+        The ticker symbol to get the price for
+
+    Returns
+    -------
+    price : float
+        The price of the ticker
+    """
+    ticker_yahoo = yf.Ticker(symbol)
+    data = ticker_yahoo.history()
+    last_quote = data.tail(1)["Close"].iloc[0]
+
+    return last_quote
+
+
+@log_start_end(log=logger)
+def get_info(symbol: str):
+    """Get info for a given ticker
+
+    Parameters
+    ----------
+    symbol : str
+        The ticker symbol to get the price for
+
+    Returns
+    -------
+    price : float
+        The info for a given ticker
+    """
+    tick = yf.Ticker(symbol)
+    return tick.info
+
+
+@log_start_end(log=logger)
+def get_closing(symbol: str) -> pd.Series:
+    """Get closing prices for a given ticker
+
+    Parameters
+    ----------
+    symbol : str
+        The ticker symbol to get the price for
+
+    Returns
+    -------
+    price : List[float]
+        A list of closing prices for a ticker
+    """
+    tick = yf.Ticker(symbol)
+    return tick.history(period="1y")["Close"]
+
+
+@log_start_end(log=logger)
+def get_dte(date_value: str) -> int:
+    """Gets days to expiration from yfinance option date"""
+    return (datetime.strptime(date_value, "%Y-%m-%d") - datetime.now()).days
+
+
+@log_start_end(log=logger)
+def get_iv_surface(symbol: str) -> pd.DataFrame:
+    """Gets IV surface for calls and puts for ticker
+
+    Parameters
+    ----------
+    symbol: str
+        Stock ticker symbol to get
+
+    Returns
+    -------
+    pd.DataFrame
+        Dataframe of DTE, Strike and IV
+    """
+
+    stock = yf.Ticker(symbol)
+    dates = stock.options
+    vol_df = pd.DataFrame()
+    columns = ["strike", "impliedVolatility", "openInterest", "lastPrice"]
+    for date_value in dates:
+        df = stock.option_chain(date_value).calls[columns]
+        df["dte"] = get_dte(date_value)
+        vol_df = pd.concat([vol_df, df], axis=0)
+        df = stock.option_chain(date_value).puts[columns]
+        df["dte"] = get_dte(date_value)
+        vol_df = pd.concat([vol_df, df], axis=0)
+    return vol_df
+
+
+@log_start_end(log=logger)
+def get_binom(
+    symbol: str,
+    expiry: str,
+    strike: float = 0,
+    put: bool = False,
+    europe: bool = False,
+    vol: Optional[float] = None,
+):
+    """Gets binomial pricing for options
+
+    Parameters
+    ----------
+    symbol : str
+        The ticker symbol of the option's underlying asset
+    expiry : str
+        The expiration for the option
+    strike : float
+        The strike price for the option
+    put : bool
+        Value a put instead of a call
+    europe : bool
+        Value a European option instead of an American option
+    vol : float
+        The annualized volatility for the underlying asset
+    """
+    # Base variables to calculate values
+    info = get_info(symbol)
+    price = yf.Ticker(symbol).fast_info.last_price
+    if vol is None:
+        closings = get_closing(symbol)
+        vol = (closings / closings.shift()).std() * (252**0.5)
+    div_yield = (
+        info["trailingAnnualDividendYield"]
+        if info["trailingAnnualDividendYield"] is not None
+        else 0
+    )
+    delta_t = 1 / 252
+    rf = get_rf()
+    exp_date = datetime.strptime(expiry, "%Y-%m-%d").date()
+    today = date.today()
+    days = (exp_date - today).days
+
+    # Binomial pricing specific variables
+    up = math.exp(vol * (delta_t**0.5))
+    down = 1 / up
+    prob_up = (math.exp((rf - div_yield) * delta_t) - down) / (up - down)
+    prob_down = 1 - prob_up
+    discount = math.exp(delta_t * rf)
+
+    und_vals: List[List[float]] = [[price]]
+
+    # Binomial tree for underlying values
+    for i in range(days):
+        cur_date = today + timedelta(days=i + 1)
+        if cur_date.weekday() < 5:
+            last = und_vals[-1]
+            new = [x * up for x in last]
+            new.append(last[-1] * down)
+            und_vals.append(new)
+
+    # Binomial tree for option values
+    opt_vals = (
+        [[max(strike - x, 0) for x in und_vals[-1]]]
+        if put
+        else [[max(x - strike, 0) for x in und_vals[-1]]]
+    )
+
+    j = 2
+    while len(opt_vals[0]) > 1:
+        new_vals = []
+        for i in range(len(opt_vals[0]) - 1):
+            if europe:
+                value = (
+                    opt_vals[0][i] * prob_up + opt_vals[0][i + 1] * prob_down
+                ) / discount
+            else:
+                if put:
+                    value = max(
+                        (opt_vals[0][i] * prob_up + opt_vals[0][i + 1] * prob_down)
+                        / discount,
+                        strike - und_vals[-j][i],
+                    )
+                else:
+                    value = max(
+                        (opt_vals[0][i] * prob_up + opt_vals[0][i + 1] * prob_down)
+                        / discount,
+                        und_vals[-j][i] - strike,
+                    )
+            new_vals.append(value)
+        opt_vals.insert(0, new_vals)
+        j += 1
+
+    return up, prob_up, discount, und_vals, opt_vals, days
+
+
+@log_start_end(log=logger)
+def get_last_price(symbol: str) -> float:
+    """Get the last price from nasdaq
+
+    Parameters
+    ----------
+    symbol: str
+        Symbol to get quote for
+
+    Returns
+    -------
+    float
+        Last price
+    """
+    return float(yf.Ticker(symbol).fast_info.last_price)

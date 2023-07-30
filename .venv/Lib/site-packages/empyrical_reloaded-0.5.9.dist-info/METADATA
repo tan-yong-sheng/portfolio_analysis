@@ -1,0 +1,418 @@
+Metadata-Version: 2.1
+Name: empyrical-reloaded
+Version: 0.5.9
+Summary: empyrical computes performance and risk statistics commonly used in quantitative finance
+Author: Quantopian Inc
+Author-email: pm@ml4trading.io
+Maintainer: Stefan Jansen
+Maintainer-email: pm@ml4trading.io
+License: Apache License
+                                   Version 2.0, January 2004
+                                http://www.apache.org/licenses/
+        
+           TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+        
+           1. Definitions.
+        
+              "License" shall mean the terms and conditions for use, reproduction,
+              and distribution as defined by Sections 1 through 9 of this document.
+        
+              "Licensor" shall mean the copyright owner or entity authorized by
+              the copyright owner that is granting the License.
+        
+              "Legal Entity" shall mean the union of the acting entity and all
+              other entities that control, are controlled by, or are under common
+              control with that entity. For the purposes of this definition,
+              "control" means (i) the power, direct or indirect, to cause the
+              direction or management of such entity, whether by contract or
+              otherwise, or (ii) ownership of fifty percent (50%) or more of the
+              outstanding shares, or (iii) beneficial ownership of such entity.
+        
+              "You" (or "Your") shall mean an individual or Legal Entity
+              exercising permissions granted by this License.
+        
+              "Source" form shall mean the preferred form for making modifications,
+              including but not limited to software source code, documentation
+              source, and configuration files.
+        
+              "Object" form shall mean any form resulting from mechanical
+              transformation or translation of a Source form, including but
+              not limited to compiled object code, generated documentation,
+              and conversions to other media types.
+        
+              "Work" shall mean the work of authorship, whether in Source or
+              Object form, made available under the License, as indicated by a
+              copyright notice that is included in or attached to the work
+              (an example is provided in the Appendix below).
+        
+              "Derivative Works" shall mean any work, whether in Source or Object
+              form, that is based on (or derived from) the Work and for which the
+              editorial revisions, annotations, elaborations, or other modifications
+              represent, as a whole, an original work of authorship. For the purposes
+              of this License, Derivative Works shall not include works that remain
+              separable from, or merely link (or bind by name) to the interfaces of,
+              the Work and Derivative Works thereof.
+        
+              "Contribution" shall mean any work of authorship, including
+              the original version of the Work and any modifications or additions
+              to that Work or Derivative Works thereof, that is intentionally
+              submitted to Licensor for inclusion in the Work by the copyright owner
+              or by an individual or Legal Entity authorized to submit on behalf of
+              the copyright owner. For the purposes of this definition, "submitted"
+              means any form of electronic, verbal, or written communication sent
+              to the Licensor or its representatives, including but not limited to
+              communication on electronic mailing lists, source code control systems,
+              and issue tracking systems that are managed by, or on behalf of, the
+              Licensor for the purpose of discussing and improving the Work, but
+              excluding communication that is conspicuously marked or otherwise
+              designated in writing by the copyright owner as "Not a Contribution."
+        
+              "Contributor" shall mean Licensor and any individual or Legal Entity
+              on behalf of whom a Contribution has been received by Licensor and
+              subsequently incorporated within the Work.
+        
+           2. Grant of Copyright License. Subject to the terms and conditions of
+              this License, each Contributor hereby grants to You a perpetual,
+              worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+              copyright license to reproduce, prepare Derivative Works of,
+              publicly display, publicly perform, sublicense, and distribute the
+              Work and such Derivative Works in Source or Object form.
+        
+           3. Grant of Patent License. Subject to the terms and conditions of
+              this License, each Contributor hereby grants to You a perpetual,
+              worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+              (except as stated in this section) patent license to make, have made,
+              use, offer to sell, sell, import, and otherwise transfer the Work,
+              where such license applies only to those patent claims licensable
+              by such Contributor that are necessarily infringed by their
+              Contribution(s) alone or by combination of their Contribution(s)
+              with the Work to which such Contribution(s) was submitted. If You
+              institute patent litigation against any entity (including a
+              cross-claim or counterclaim in a lawsuit) alleging that the Work
+              or a Contribution incorporated within the Work constitutes direct
+              or contributory patent infringement, then any patent licenses
+              granted to You under this License for that Work shall terminate
+              as of the date such litigation is filed.
+        
+           4. Redistribution. You may reproduce and distribute copies of the
+              Work or Derivative Works thereof in any medium, with or without
+              modifications, and in Source or Object form, provided that You
+              meet the following conditions:
+        
+              (a) You must give any other recipients of the Work or
+                  Derivative Works a copy of this License; and
+        
+              (b) You must cause any modified files to carry prominent notices
+                  stating that You changed the files; and
+        
+              (c) You must retain, in the Source form of any Derivative Works
+                  that You distribute, all copyright, patent, trademark, and
+                  attribution notices from the Source form of the Work,
+                  excluding those notices that do not pertain to any part of
+                  the Derivative Works; and
+        
+              (d) If the Work includes a "NOTICE" text file as part of its
+                  distribution, then any Derivative Works that You distribute must
+                  include a readable copy of the attribution notices contained
+                  within such NOTICE file, excluding those notices that do not
+                  pertain to any part of the Derivative Works, in at least one
+                  of the following places: within a NOTICE text file distributed
+                  as part of the Derivative Works; within the Source form or
+                  documentation, if provided along with the Derivative Works; or,
+                  within a display generated by the Derivative Works, if and
+                  wherever such third-party notices normally appear. The contents
+                  of the NOTICE file are for informational purposes only and
+                  do not modify the License. You may add Your own attribution
+                  notices within Derivative Works that You distribute, alongside
+                  or as an addendum to the NOTICE text from the Work, provided
+                  that such additional attribution notices cannot be construed
+                  as modifying the License.
+        
+              You may add Your own copyright statement to Your modifications and
+              may provide additional or different license terms and conditions
+              for use, reproduction, or distribution of Your modifications, or
+              for any such Derivative Works as a whole, provided Your use,
+              reproduction, and distribution of the Work otherwise complies with
+              the conditions stated in this License.
+        
+           5. Submission of Contributions. Unless You explicitly state otherwise,
+              any Contribution intentionally submitted for inclusion in the Work
+              by You to the Licensor shall be under the terms and conditions of
+              this License, without any additional terms or conditions.
+              Notwithstanding the above, nothing herein shall supersede or modify
+              the terms of any separate license agreement you may have executed
+              with Licensor regarding such Contributions.
+        
+           6. Trademarks. This License does not grant permission to use the trade
+              names, trademarks, service marks, or product names of the Licensor,
+              except as required for reasonable and customary use in describing the
+              origin of the Work and reproducing the content of the NOTICE file.
+        
+           7. Disclaimer of Warranty. Unless required by applicable law or
+              agreed to in writing, Licensor provides the Work (and each
+              Contributor provides its Contributions) on an "AS IS" BASIS,
+              WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+              implied, including, without limitation, any warranties or conditions
+              of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+              PARTICULAR PURPOSE. You are solely responsible for determining the
+              appropriateness of using or redistributing the Work and assume any
+              risks associated with Your exercise of permissions under this License.
+        
+           8. Limitation of Liability. In no event and under no legal theory,
+              whether in tort (including negligence), contract, or otherwise,
+              unless required by applicable law (such as deliberate and grossly
+              negligent acts) or agreed to in writing, shall any Contributor be
+              liable to You for damages, including any direct, indirect, special,
+              incidental, or consequential damages of any character arising as a
+              result of this License or out of the use or inability to use the
+              Work (including but not limited to damages for loss of goodwill,
+              work stoppage, computer failure or malfunction, or any and all
+              other commercial damages or losses), even if such Contributor
+              has been advised of the possibility of such damages.
+        
+           9. Accepting Warranty or Additional Liability. While redistributing
+              the Work or Derivative Works thereof, You may choose to offer,
+              and charge a fee for, acceptance of support, warranty, indemnity,
+              or other liability obligations and/or rights consistent with this
+              License. However, in accepting such obligations, You may act only
+              on Your own behalf and on Your sole responsibility, not on behalf
+              of any other Contributor, and only if You agree to indemnify,
+              defend, and hold each Contributor harmless for any liability
+              incurred by, or claims asserted against, such Contributor by reason
+              of your accepting any such warranty or additional liability.
+        
+           END OF TERMS AND CONDITIONS
+        
+           APPENDIX: How to apply the Apache License to your work.
+        
+              To apply the Apache License to your work, attach the following
+              boilerplate notice, with the fields enclosed by brackets "{}"
+              replaced with your own identifying information. (Don't include
+              the brackets!)  The text should be enclosed in the appropriate
+              comment syntax for the file format. We also recommend that a
+              file or class name and description of purpose be included on the
+              same "printed page" as the copyright notice for easier
+              identification within third-party archives.
+        
+           Copyright 2018 Quantopian, Inc.
+        
+           Licensed under the Apache License, Version 2.0 (the "License");
+           you may not use this file except in compliance with the License.
+           You may obtain a copy of the License at
+        
+               http://www.apache.org/licenses/LICENSE-2.0
+        
+           Unless required by applicable law or agreed to in writing, software
+           distributed under the License is distributed on an "AS IS" BASIS,
+           WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+           See the License for the specific language governing permissions and
+           limitations under the License.
+        
+Project-URL: homepage, https://ml4trading.io
+Project-URL: documentation, https://empyrical.ml4trading.io
+Project-URL: repository, https://github.com/stefan-jansen/empyrical-reloaded
+Classifier: Development Status :: 4 - Beta
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Intended Audience :: Science/Research
+Classifier: Topic :: Scientific/Engineering
+Classifier: Topic :: Scientific/Engineering :: Mathematics
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy (>=1.9.2)
+Requires-Dist: bottleneck (>=1.3.0)
+Requires-Dist: pandas (>=1.0.0)
+Requires-Dist: scipy (>=0.15.1)
+Requires-Dist: pandas-datareader (>=0.4)
+Requires-Dist: yfinance (>=0.1.63)
+Provides-Extra: dev
+Requires-Dist: flake8 (>=3.9.1) ; extra == 'dev'
+Requires-Dist: black ; extra == 'dev'
+Requires-Dist: pre-commit (>=2.12.1) ; extra == 'dev'
+Provides-Extra: doc
+Requires-Dist: Cython ; extra == 'doc'
+Requires-Dist: Sphinx (>=1.3.2) ; extra == 'doc'
+Requires-Dist: numpydoc (>=0.5.0) ; extra == 'doc'
+Requires-Dist: sphinx-autobuild (>=0.6.0) ; extra == 'doc'
+Requires-Dist: pydata-sphinx-theme ; extra == 'doc'
+Requires-Dist: sphinx-markdown-tables ; extra == 'doc'
+Requires-Dist: sphinx-copybutton ; extra == 'doc'
+Requires-Dist: nbsphinx ; extra == 'doc'
+Requires-Dist: m2r2 ; extra == 'doc'
+Provides-Extra: test
+Requires-Dist: tox (>=2.3.1) ; extra == 'test'
+Requires-Dist: pytest (>=6.2.3) ; extra == 'test'
+Requires-Dist: pytest-cov (>=2.11.1) ; extra == 'test'
+Requires-Dist: flake8 (>=3.9.1) ; extra == 'test'
+Requires-Dist: black ; extra == 'test'
+
+<p align="center">
+<a href="https://empyrical.ml4trading.io">
+<img src="https://i.imgur.com/PbZNeud.png" width="35%">
+</a>
+</p>
+
+![PyPI](https://img.shields.io/pypi/v/empyrical-reloaded)
+![Conda (channel only)](https://img.shields.io/conda/vn/ml4t/empyrical-reloaded)
+
+[![PyPI Wheels](https://github.com/stefan-jansen/empyrical-reloaded/actions/workflows/build_wheels.yml/badge.svg)](https://github.com/stefan-jansen/empyrical-reloaded/actions/workflows/build_wheels.yml)
+[![Conda packages](https://github.com/stefan-jansen/empyrical-reloaded/actions/workflows/conda_package.yml/badge.svg)](https://github.com/stefan-jansen/empyrical-reloaded/actions/workflows/conda_package.yml)
+[![CI Tests](https://github.com/stefan-jansen/empyrical-reloaded/actions/workflows/unit_tests.yml/badge.svg)](https://github.com/stefan-jansen/empyrical-reloaded/actions/workflows/unit_tests.yml)
+
+Common financial return and risk metrics in Python.
+
+## Installation
+
+empyrical requires Python 3.7+. You can install it using `pip`:
+
+```bash
+pip install empyrical-reloaded
+```
+
+or `conda`:
+
+```bash
+conda install empyrical-reloaded -c ml4t -c ranaroussi
+```
+
+empyrical requires and installs the following packages while executing the above commands:
+
+- numpy>=1.9.2
+- pandas>=1.0.0
+- scipy>=0.15.1
+- pandas-datareader>=0.4
+- yfinance>=0.1.59
+
+Empyrical uses [yfinance](https://github.com/ranaroussi/yfinance) to download price data from [Yahoo! Finance](https://finance.yahoo.com/) and [pandas-datareader](https://pandas-datareader.readthedocs.io/en/latest/) to access [Fama-French](https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html) risk factors.
+
+## Usage
+
+### Simple Statistics
+
+Empyrical computes basic metrics from returns and volatility to alpha and beta, Value at Risk, and Shorpe or Sortino ratios.
+
+```python
+import numpy as np
+from empyrical import max_drawdown, alpha_beta
+
+returns = np.array([.01, .02, .03, -.4, -.06, -.02])
+benchmark_returns = np.array([.02, .02, .03, -.35, -.05, -.01])
+
+# calculate the max drawdown
+max_drawdown(returns)
+
+# calculate alpha and beta
+alpha, beta = alpha_beta(returns, benchmark_returns)
+```
+
+### Rolling Measures
+
+Empyrical also aggregates returna nd risk metrics for rolling windows:
+
+```python
+import numpy as np
+from empyrical import roll_max_drawdown
+
+returns = np.array([.01, .02, .03, -.4, -.06, -.02])
+
+# calculate the rolling max drawdown
+roll_max_drawdown(returns, window=3)
+```
+
+### Pandas Support
+
+Empyrical also works with both [NumPy](https://numpy.org/) arrays and [Pandas](https://pandas.pydata.org/) data structures:
+
+```python
+import pandas as pd
+from empyrical import roll_up_capture, capture
+
+returns = pd.Series([.01, .02, .03, -.4, -.06, -.02])
+factor_returns = pd.Series([.02, .01, .03, -.01, -.02, .02])
+
+# calculate a capture ratio
+capture(returns, factor_returns)
+-0.147387712263491
+
+```
+
+### Fama-French Risk Factors
+
+Empyrical downloads Fama-French risk factors from 1970 onward:
+
+```python
+import empyrical as emp
+
+risk_factors = emp.utils.get_fama_french()
+
+risk_factors.head().append(risk_factors.tail())
+
+                           Mkt-RF     SMB     HML       RF     Mom
+Date
+1970-01-02 00:00:00+00:00  0.0118  0.0131  0.0100  0.00029 -0.0341
+1970-01-05 00:00:00+00:00  0.0059  0.0066  0.0072  0.00029 -0.0152
+1970-01-06 00:00:00+00:00 -0.0074  0.0010  0.0020  0.00029  0.0040
+1970-01-07 00:00:00+00:00 -0.0015  0.0039 -0.0032  0.00029  0.0011
+1970-01-08 00:00:00+00:00  0.0004  0.0018 -0.0015  0.00029  0.0033
+2021-02-22 00:00:00+00:00 -0.0112 -0.0009  0.0314  0.00000 -0.0325
+2021-02-23 00:00:00+00:00 -0.0015 -0.0128  0.0090  0.00000 -0.0185
+2021-02-24 00:00:00+00:00  0.0115  0.0120  0.0134  0.00000 -0.0007
+2021-02-25 00:00:00+00:00 -0.0273 -0.0112  0.0087  0.00000 -0.0195
+2021-02-26 00:00:00+00:00 -0.0028  0.0072 -0.0156  0.00000  0.0195
+```
+
+### Asset Prices and Benchmark Returns
+
+Empyrical [yfinance](https://github.com/ranaroussi/yfinance) to download price data from [Yahoo! Finance](https://finance.yahoo.com/). To obtain the S&P returns since 1950, use:
+
+```python
+import empyrical as emp
+
+symbol = '^GSPC'
+returns = emp.utils.get_symbol_returns_from_yahoo(symbol,
+                                                  start='1950-01-01')
+
+import seaborn as sns  # requires separate installation
+import matplotlib.pyplot as plt  # requires separate installation
+
+fig, axes = plt.subplots(ncols=2, figsize=(14, 5))
+
+with sns.axes_style('whitegrid'):
+    returns.plot(ax=axes[0], rot=0, title='Time Series', legend=False)
+    sns.histplot(returns, ax=axes[1], legend=False)
+axes[1].set_title('Histogram')
+sns.despine()
+plt.tight_layout()
+plt.suptitle('Daily S&P 500 Returns')
+```
+
+<a href="https://empyrical.ml4trading.io">
+<img src="https://i.imgur.com/0PSxfSI.png" width="100%">
+</a>
+
+### Documentation
+
+See the [documentation](https://empyrical.ml4trading.io) for details on the API.
+
+## Support
+
+Please [open an issue](https://github.com/stefan-jansen/empyrical-reloaded/issues/new) for support.
+
+## Contributing
+
+Please contribute using [Github Flow](https://guides.github.com/introduction/flow/). Create a branch, add commits, and [open a pull request](https://github.com/stefan-jansen/empyrical-reloaded/compare/).
+
+## Testing
+
+- install requirements
+    - "pytest>=6.2.0",
+
+```bash
+pytest tests
+```

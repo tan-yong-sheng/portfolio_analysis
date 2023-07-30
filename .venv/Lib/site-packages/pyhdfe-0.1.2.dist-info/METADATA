@@ -1,0 +1,74 @@
+Metadata-Version: 2.1
+Name: pyhdfe
+Version: 0.1.2
+Summary: High dimensional fixed effect absorption with Python 3
+Home-page: https://github.com/jeffgortmaker/pyhdfe
+Author: Jeff Gortmaker
+Author-email: jeff@jeffgortmaker.com
+License: MIT
+Project-URL: Documentation, http://pyhdfe.readthedocs.io/en/latest
+Project-URL: Tracker, https://github.com/jeffgortmaker/pyhdfe/issues
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Topic :: Scientific/Engineering
+Requires-Python: >=3.6
+License-File: LICENSE.txt
+Requires-Dist: numpy (>=1.12.0)
+Requires-Dist: scipy (>=1.0.0)
+Provides-Extra: docs
+Requires-Dist: sphinx (==2.0.0) ; extra == 'docs'
+Requires-Dist: ipython ; extra == 'docs'
+Requires-Dist: astunparse ; extra == 'docs'
+Requires-Dist: sphinx-rtd-theme (==0.4.3) ; extra == 'docs'
+Requires-Dist: nbsphinx (==0.5.0) ; extra == 'docs'
+Requires-Dist: jinja2 (~=2.11) ; extra == 'docs'
+Requires-Dist: docutils (==0.17) ; extra == 'docs'
+Provides-Extra: tests
+Requires-Dist: pytest ; extra == 'tests'
+Requires-Dist: pytest-xdist ; extra == 'tests'
+
+An overview of the package, examples, and other documentation can be found on `Read the Docs <https://pyhdfe.readthedocs.io/en/stable/>`_.
+
+.. docs-start
+
+PyHDFE is a Python 3 implementation of algorithms for absorbing high dimensional fixed effects. This package was created by `Jeff Gortmaker <https://jeffgortmaker.com>`_ in collaboration with `Anya Tarascina <http://anyatarascina.com>`_.
+
+What PyHDFE won't do is provide a convenient interface for running regressions. Instead, the package is meant to be incorporated into statistical projects that would benefit from performant fixed effect absorption. Another goal is facilitating fair comparison of algorithms that have been previously implemented in various languages with different convergence criteria.
+
+Development of the package has been guided by code made publicly available by many researchers and practitioners. For a full list of papers and software cited in this documentation, refer to the `references <https://pyhdfe.readthedocs.io/en/stable/references.html>`_ section of the documentation.
+
+
+Installation
+------------
+
+The PyHDFE package has been tested on `Python <https://www.python.org/downloads/>`_ versions 3.6 through 3.9. The `SciPy instructions <https://scipy.org/install/>`_ for installing related packages is a good guide for how to install a scientific Python environment. A good choice is the `Anaconda Distribution <https://www.anaconda.com/products/distribution>`_, since, along with many other packages that are useful for scientific computing, it comes packaged with PyHDFE's only required dependencies: `NumPy <https://numpy.org/>`_ and `SciPy <https://scipy.org/>`_.
+
+You can install the current release of PyHDFE with `pip <https://pip.pypa.io/en/latest/>`_::
+
+    pip install pyhdfe
+
+You can upgrade to a newer release with the ``--upgrade`` flag::
+
+    pip install --upgrade pyhdfe
+
+If you lack permissions, you can install PyHDFE in your user directory with the ``--user`` flag::
+
+    pip install --user pyhdfe
+
+Alternatively, you can download a wheel or source archive from `PyPI <https://pypi.org/project/pyhdfe/>`_. You can find the latest development code on `GitHub <https://github.com/jeffgortmaker/pyhdfe/>`_ and the latest development documentation `here <https://pyhdfe.readthedocs.io/en/latest/>`_.
+
+
+Bugs and Requests
+-----------------
+
+Please use the `GitHub issue tracker <https://github.com/jeffgortmaker/pyhdfe/issues>`_ to submit bugs or to request features.
+

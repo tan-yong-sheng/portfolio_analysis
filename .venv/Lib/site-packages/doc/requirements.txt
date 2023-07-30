@@ -1,0 +1,14 @@
+sphinx_immaterial
+sphinx_autodoc_typehints
+ipython
+nbsphinx
+sphinxcontrib.spelling
+sphinx
+jupyter
+notebook
+xarray>=0.13
+nbformat
+matplotlib
+seaborn
+mypy_extensions>=0.4
+mistune<2
