@@ -15,7 +15,7 @@ dependencies:
   - lxml
   - pytz
   - beautifulsoup4
-  - cvxpy
+  - conda-forge::cvxpy
   - ta-lib
   - pip:
       - pybind11
