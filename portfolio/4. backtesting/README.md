@@ -13,3 +13,7 @@
 
 1. https://github.com/sergio12S/youtoube/blob/master/vectorbt/ressearch_by_vbt.ipynb / https://www.youtube.com/watch?v=xrdutbpfpho
 
+
+## Challenge: 
+1. partial selling when hit stop loss? https://github.com/polakowo/vectorbt/issues/186
+2. 
