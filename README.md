@@ -21,3 +21,7 @@ But, take note that the data source is from Yahoo Finance, so when you want to c
 
 Limitations:
 - didn't include dividends when calculating dividends
+
+List of some other interesting finance github repo to look on:
+- https://github.com/dylanhogg/awesome-python#finance
+- quantlib: http://gouthamanbalaraman.com/blog/quantlib-python-tutorials-with-examples.html & quantlib book: https://leanpub.com/quantlibpythoncookbook
