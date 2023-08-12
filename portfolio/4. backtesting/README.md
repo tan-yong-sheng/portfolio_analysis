@@ -16,4 +16,9 @@
 
 ## Challenge: 
 1. partial selling when hit stop loss? https://github.com/polakowo/vectorbt/issues/186
-2. 
+2. vectorbt - group_by=True, # 0 vs 1 vs True vs False -what their meaning
+
+
+## Suggestion
+- can begin to layer in trade related optimizations. Think entry/exit, holding periods, market/limit orders, allocation strategy etc
+- consider a volatility targeting strategy to smooth out the vol spikes that happen in these tech stocks
