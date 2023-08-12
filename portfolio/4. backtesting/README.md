@@ -17,6 +17,7 @@
 ## Challenge: 
 1. partial selling when hit stop loss? https://github.com/polakowo/vectorbt/issues/186
 2. vectorbt - group_by=True, # 0 vs 1 vs True vs False -what their meaning
+4. market limit - e.g., buy limit, sell limit, buy stop, sell stop
 
 
 ## Suggestion
