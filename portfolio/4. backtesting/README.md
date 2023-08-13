@@ -2,7 +2,6 @@
 
 1. https://qubitquants.pro/vbt-tuts-toc/index.html
 
-
 1. https://greyhoundanalytics.com/tags/vectorbt/  - vectorbt for beginners (Youtube): https://www.youtube.com/watch?v=JOdEZMcvyac
 
 1. https://vectorbt.dev/
@@ -17,9 +16,12 @@
 ## Challenge: 
 1. partial selling when hit stop loss? https://github.com/polakowo/vectorbt/issues/186
 2. vectorbt - group_by=True, # 0 vs 1 vs True vs False -what their meaning
-4. market limit - e.g., buy limit, sell limit, buy stop, sell stop
-
+4. market limit - e.g., buy limit, sell limit, buy stop, sell stop, trailing stop loss
+5. dividend reinvestment?
 
 ## Suggestion
 - can begin to layer in trade related optimizations. Think entry/exit, holding periods, market/limit orders, allocation strategy etc
 - consider a volatility targeting strategy to smooth out the vol spikes that happen in these tech stocks
+
+## Book recommended by Pyquantnews
+- https://twitter.com/pyquantnews/status/1682909953659478016
