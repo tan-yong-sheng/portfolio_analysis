@@ -1,0 +1,1 @@
+https://evanlariviereblog.wordpress.com/2022/03/12/trend-following-asset-class-rotation-in-vectorbt/
