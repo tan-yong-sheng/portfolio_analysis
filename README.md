@@ -4,7 +4,7 @@
 This portfolio tearsheet is mainly generated using 2 libraries, `openbb` and `quantstats`
 
 - Used `openbb.portfolio.load` to load my transactions data from excel file: [portfolio_data.xlsx](./input/portfolio_data.xlsx) and then calculate my portfolio return
-- Used `quantstats.reports.html` to generate a tearsheet for my portfolio. See the output here: [Portfolio tearsheet](./portfolio/2. KPI & benchmark/KPI_and_benchmark.ipynb)
+- Used `quantstats.reports.html` to generate a tearsheet for my portfolio. See the output here: [Portfolio tearsheet]("./portfolio/2. KPI & benchmark/KPI_and_benchmark.ipynb")
 
 So, if you want to reuse this template, just merely change this two input:
 
