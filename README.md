@@ -1,5 +1,7 @@
 # Build a Tearsheet for your portfolio within 10 lines of code
 
+See more at this [blog](https://tanyongsheng.net/blog/are-you-beating-the-market-benchmark-your-portfolio-with-python/)
+
 ## Overview
 This portfolio tearsheet is mainly generated using 2 libraries, `openbb` and `quantstats`
 
